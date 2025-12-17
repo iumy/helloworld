@@ -14,6 +14,12 @@ jobs:
 
       - uses: hashicorp/setup-terraform@v3
 
+      - name: Generate MD5 Hash
+        id: hash_step
+        run: |
+          # Calculate hash of a file
+          echo "FILE_MD5=$(md5sum filetocalcmd5.txt | awk '{ print $1 }')" >> $GITHUB_ENV
+
       - name: Terraform Init
         run: terraform init
 
@@ -21,13 +27,7 @@ jobs:
         run: terraform validate
 
       - name: Terraform Plan
-        run: terraform plan
-
-      - name: Generate MD5 Hash
-        id: hash_step
-        run: |
-          # Calculate hash of a file
-          echo "FILE_MD5=$(md5sum filetocalcmd5.txt | awk '{ print $1 }')" >> $GITHUB_ENV
+        run: terraform plan -var="my_md5_var=${{ env.FILE_MD5 }}"
 
       - name: Terraform Apply
         run: terraform apply -auto-approve -var="my_md5_var=${{ env.FILE_MD5 }}"
