@@ -1,0 +1,3 @@
+This is a sample file.
+It could be in any format.
+The MD5 is calculated on the content of this file

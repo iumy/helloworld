@@ -1,0 +1,22 @@
+name: Terraform MD5
+
+on:
+  pull_request:
+  push:
+    branches:
+       [ main, develop*, feature/* ]
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate MD5 Hash
+        id: hash_step
+        run: |
+          # Calculate hash of a file
+          echo "FILE_MD5=$(md5sum filetocalcmd5.txt | awk '{ print $1 }')" >> $GITHUB_ENV
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve -var="my_md5_var=${{ env.FILE_MD5 }}"
